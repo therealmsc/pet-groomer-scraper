@@ -108,11 +108,11 @@ async def groomer_handler(context: PlaywrightCrawlingContext) -> None:
         Actor.log.info(f"  ✗ Skipping (aggregator page): {name}")
         return
 
-    # Skip vet/medical pages that leaked through DDG (common false positive)
+    # Skip vet/medical/career pages that leaked through DDG (common false positive)
     vet_patterns = [
         "veterinary", "vet tech", "animal hospital", "vet clinic",
         "vet school", "vet assistant", "vet program", "accredited vet",
-        "vet career", "vet jobs",
+        "vet career", "vet jobs", "career", "school",
     ]
     if any(p in name_lower for p in vet_patterns):
         Actor.log.info(f"  ✗ Skipping (vet/medical page): {name}")
@@ -358,6 +358,10 @@ async def discover_groomers(state: str, cities: list[str]) -> dict[str, list[dic
                     "wagwalking.com", "rover.com", "care.com",
                     "petco.com", "petsmart.com", "pet supplies plus",
                     "petlist.us", "petsathome.com",
+                    # Groomer false positives — aggregators, directories, job/school sites
+                    "petbacker.com", "loc8nearme.com", "veterinarianedu.org",
+                    "threebestrated.com", "easycounter.com", "find-us-here.com",
+                    "animalbehaviorcollege.com",
                     "chewy.com", "petsupply.com", "tractorsupply.com",
                     "hotels.com", "booking.com", "bringfido.com",
                     "animalshelter.org", "petfinder.com", "adoptapet.com",
