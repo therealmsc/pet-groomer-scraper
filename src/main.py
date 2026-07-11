@@ -108,6 +108,16 @@ async def groomer_handler(context: PlaywrightCrawlingContext) -> None:
         Actor.log.info(f"  ✗ Skipping (aggregator page): {name}")
         return
 
+    # Skip vet/medical pages that leaked through DDG (common false positive)
+    vet_patterns = [
+        "veterinary", "vet tech", "animal hospital", "vet clinic",
+        "vet school", "vet assistant", "vet program", "accredited vet",
+        "vet career", "vet jobs",
+    ]
+    if any(p in name_lower for p in vet_patterns):
+        Actor.log.info(f"  ✗ Skipping (vet/medical page): {name}")
+        return
+
     # Skip records with obfuscated phone numbers
     if phone and ("****" in phone or "*" in phone):
         Actor.log.info(f"  ✗ Skipping (obfuscated phone): {url}")
@@ -158,19 +168,20 @@ def _extract_name(soup: BeautifulSoup, url: str) -> str:
             if suffix in title:
                 title = title.split(suffix)[0].strip()
         # If title still has pipe-separated parts (e.g. "Dog Grooming | Arnold, MO | Playful Paws"),
-        # take the last meaningful segment (the business name)
-        if " | " in title:
-            parts = [p.strip() for p in title.split(" | ")]
-            # Remove parts that look like locations (short, comma-separated)
-            location_words = {"mo", "il", "ks", "ia", "ne", "ok", "ar", "tn", "ky",
-                              "tx", "co", "wy", "mt", "nd", "sd", "mn", "wi", "mi",
-                              "in", "oh", "pa", "ny", "vt", "nh", "me", "ma", "ri",
-                              "ct", "nj", "de", "md", "va", "wv", "nc", "sc", "ga",
-                              "fl", "al", "ms", "la", "nm", "az", "ca", "nv", "ut",
-                              "id", "or", "wa", "ak", "hi", "dc"}
+        # take the last meaningful segment (the business name).
+        # Handle both " | " and "|" (no spaces) separators.
+        separator = " | " if " | " in title else "|" if "|" in title else None
+        # US state abbreviations for filtering location segments
+        location_words = {"mo", "il", "ks", "ia", "ne", "ok", "ar", "tn", "ky",
+                          "tx", "co", "wy", "mt", "nd", "sd", "mn", "wi", "mi",
+                          "in", "oh", "pa", "ny", "vt", "nh", "me", "ma", "ri",
+                          "ct", "nj", "de", "md", "va", "wv", "nc", "sc", "ga",
+                          "fl", "al", "ms", "la", "nm", "az", "ca", "nv", "ut",
+                          "id", "or", "wa", "ak", "hi", "dc"}
+        if separator:
+            parts = [p.strip() for p in title.split(separator)]
             biz_parts = []
             for part in parts:
-                # Skip parts that are just city, state abbreviation, or short generic labels
                 if len(part) < 4:
                     continue
                 if "," in part and len(part) < 30:
@@ -181,7 +192,13 @@ def _extract_name(soup: BeautifulSoup, url: str) -> str:
                     continue
                 biz_parts.append(part)
             if biz_parts:
-                title = biz_parts[-1]  # Last non-location segment = business name
+                title = biz_parts[-1]
+        # Reject titles that are just a city + state (e.g. "Palm Coast FL")
+        title_lower = title.strip().lower()
+        for st in location_words:
+            if title_lower == f"palm coast {st}" or title_lower.endswith(f" {st}") and len(title_lower.split()) <= 3:
+                # Could be just a location — fall through to H1/domain below
+                pass
         # Only use title if it's not generic and has reasonable length
         if not _is_generic_title(title) and 5 < len(title) < 80:
             return title
