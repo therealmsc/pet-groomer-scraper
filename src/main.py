@@ -113,6 +113,7 @@ async def groomer_handler(context: PlaywrightCrawlingContext) -> None:
         "veterinary", "vet tech", "animal hospital", "vet clinic",
         "vet school", "vet assistant", "vet program", "accredited vet",
         "vet career", "vet jobs", "career", "school",
+        "pet sitting", "pet sitter",
     ]
     if any(p in name_lower for p in vet_patterns):
         Actor.log.info(f"  ✗ Skipping (vet/medical page): {name}")
@@ -363,6 +364,7 @@ async def discover_groomers(state: str, cities: list[str]) -> dict[str, list[dic
                     "threebestrated.com", "easycounter.com", "find-us-here.com",
                     "animalbehaviorcollege.com",
                     "dogpack.com", "bbb.org",
+                    "petcarebooker.com",
                     "chewy.com", "petsupply.com", "tractorsupply.com",
                     "hotels.com", "booking.com", "bringfido.com",
                     "animalshelter.org", "petfinder.com", "adoptapet.com",
