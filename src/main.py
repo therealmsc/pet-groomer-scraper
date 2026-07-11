@@ -146,7 +146,7 @@ def _extract_name(soup: BeautifulSoup, url: str) -> str:
     """Extract groomer business name from page title, H1, or domain."""
     title = soup.title.string if soup.title else ""
     if title:
-        title = title.strip()
+        # Strip common suffixes (check longest first to avoid partial matches)
         suffixes = [
             " - Dog Groomer", " | Dog Groomer", " - Pet Groomer", " | Pet Groomer",
             " - Dog Grooming", " | Dog Grooming", " - Pet Grooming", " | Pet Grooming",
@@ -157,6 +157,32 @@ def _extract_name(soup: BeautifulSoup, url: str) -> str:
         for suffix in suffixes:
             if suffix in title:
                 title = title.split(suffix)[0].strip()
+        # If title still has pipe-separated parts (e.g. "Dog Grooming | Arnold, MO | Playful Paws"),
+        # take the last meaningful segment (the business name)
+        if " | " in title:
+            parts = [p.strip() for p in title.split(" | ")]
+            # Remove parts that look like locations (short, comma-separated)
+            location_words = {"mo", "il", "ks", "ia", "ne", "ok", "ar", "tn", "ky",
+                              "tx", "co", "wy", "mt", "nd", "sd", "mn", "wi", "mi",
+                              "in", "oh", "pa", "ny", "vt", "nh", "me", "ma", "ri",
+                              "ct", "nj", "de", "md", "va", "wv", "nc", "sc", "ga",
+                              "fl", "al", "ms", "la", "nm", "az", "ca", "nv", "ut",
+                              "id", "or", "wa", "ak", "hi", "dc"}
+            biz_parts = []
+            for part in parts:
+                # Skip parts that are just city, state abbreviation, or short generic labels
+                if len(part) < 4:
+                    continue
+                if "," in part and len(part) < 30:
+                    maybe_state = part.split(",")[-1].strip().lower()
+                    if maybe_state in location_words:
+                        continue
+                if part.lower() in GENERIC_TITLES:
+                    continue
+                biz_parts.append(part)
+            if biz_parts:
+                title = biz_parts[-1]  # Last non-location segment = business name
+        # Only use title if it's not generic and has reasonable length
         if not _is_generic_title(title) and 5 < len(title) < 80:
             return title
 
@@ -314,6 +340,7 @@ async def discover_groomers(state: str, cities: list[str]) -> dict[str, list[dic
                     "youtube.com", "pinterest.com", "tiktok.com",
                     "wagwalking.com", "rover.com", "care.com",
                     "petco.com", "petsmart.com", "pet supplies plus",
+                    "petlist.us", "petsathome.com",
                     "chewy.com", "petsupply.com", "tractorsupply.com",
                     "hotels.com", "booking.com", "bringfido.com",
                     "animalshelter.org", "petfinder.com", "adoptapet.com",
