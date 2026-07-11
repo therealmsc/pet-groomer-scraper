@@ -1,0 +1,52 @@
+{
+  "actorSpecification": 1,
+  "name": "us-pet-groomer-scraper",
+  "title": "US Pet Groomer Scraper",
+  "description": "Scrapes pet grooming businesses for any US state. DuckDuckGo discovery → Playwright crawl. Extracts name, phone, address, hours, services (mobile, self-wash, dog/cat, nail trim, bath, haircut, teeth cleaning). Zero API keys.",
+  "version": "1.0",
+  "minMemoryMbytes": 1024,
+  "maxMemoryMbytes": 4096,
+  "input": {
+    "title": "Scraper Input",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+      "state": {
+        "title": "State",
+        "type": "string",
+        "description": "State name to scrape (e.g. 'Missouri', 'California', 'Texas')",
+        "default": "Missouri",
+        "editor": "select",
+        "enum": [
+          "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+          "Colorado", "Connecticut", "Delaware", "District of Columbia",
+          "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana",
+          "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
+          "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+          "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+          "New Jersey", "New Mexico", "New York", "North Carolina",
+          "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
+          "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+          "Texas", "Utah", "Vermont", "Virginia", "Washington",
+          "West Virginia", "Wisconsin", "Wyoming"
+        ]
+      },
+      "maxCities": {
+        "title": "Max Cities",
+        "type": "integer",
+        "description": "Limit cities to scrape (0 = all cities). Useful for testing.",
+        "default": 0,
+        "minimum": 0
+      },
+      "maxGroomersPerCity": {
+        "title": "Max Groomers Per City",
+        "type": "integer",
+        "description": "Maximum groomer websites to crawl per city",
+        "default": 15,
+        "minimum": 1,
+        "maximum": 50
+      }
+    },
+    "required": ["state"]
+  }
+}
