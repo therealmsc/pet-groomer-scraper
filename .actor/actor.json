@@ -42,6 +42,13 @@
         "default": 0,
         "minimum": 0
       },
+      "cityOffset": {
+        "title": "City Offset",
+        "type": "integer",
+        "description": "Skip this many cities before starting (use with maxCities to paginate through a state).",
+        "default": 0,
+        "minimum": 0
+      },
       "maxGroomersPerCity": {
         "title": "Max Groomers Per City",
         "type": "integer",

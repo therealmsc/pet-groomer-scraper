@@ -402,7 +402,8 @@ async def main() -> None:
         actor_input = await Actor.get_input() or {}
         state = actor_input.get("state", "Missouri")
         max_cities = actor_input.get("maxCities", 0)
-        max_groomers_per_city = actor_input.get("maxGroomersPerCity", 15)
+        city_offset = actor_input.get("cityOffset", 0)
+        max_groomers_per_city = actor_input.get("maxGroomersPerCity", 5)
 
         Actor.log.info(f"✂️ Pet Groomer Scraper — {state}")
         Actor.log.info(f"   Max cities: {max_cities or 'ALL'}")
