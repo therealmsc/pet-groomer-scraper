@@ -34,14 +34,13 @@ SAT_RE = re.compile(r'Saturday[:\s]*(\d{1,2}(?::\d{2})?\s*(?:am|pm|AM|PM)\s*(?:-
 SUNDAY_RE = re.compile(r'Sunday[:\s]*(\d{1,2}(?::\d{2})?\s*(?:am|pm|AM|PM)\s*(?:-|–|to)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm|AM|PM))', re.I)
 MOBILE_RE = re.compile(r'mobile grooming|mobile pet spa|house call|come to you|we come to|mobile service', re.I)
 SELF_WASH_RE = re.compile(r'self.?wash|self.?serve|diy wash|do.?it.?yourself wash', re.I)
-DOG_GROOMING_RE = re.compile(r'dog grooming|dog groom|cainine grooming|puppy groom', re.I)
+DOG_GROOMING_RE = re.compile(r'dog grooming|dog groom|canine grooming|puppy groom', re.I)
 CAT_GROOMING_RE = re.compile(r'cat grooming|cat groom|feline grooming|kitten groom', re.I)
 NAIL_TRIM_RE = re.compile(r'nail trim|nail clip|nail grind|dremel', re.I)
 BATH_RE = re.compile(r'bath|de.?shed|shampoo|conditioning treatment', re.I)
 HAIRCUT_RE = re.compile(r'haircut|breed.?specific|scissor|clipper|trim', re.I)
 TEETH_RE = re.compile(r'teeth cleaning|dental|breath', re.I)
 FOUNDED_RE = re.compile(r'(?:since|established|founded|serving since)\s*(\d{4})', re.I)
-GROOMER_NAMES_RE = re.compile(r'(?:Groomer|Stylist)\s*[:\-]?\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)', re.I)
 
 
 @router.default_handler
@@ -421,13 +420,14 @@ async def main() -> None:
                 await Actor.fail(status_message=f"Unknown state: '{state}'. Valid: Alabama, Alaska, ..., Wyoming")
                 return
 
+        if city_offset > 0:
+            cities = cities[city_offset:]
+            Actor.log.info(f"   After offset {city_offset}: {len(cities)} cities")
+
         if max_cities and max_cities > 0:
             cities = cities[:max_cities]
 
         Actor.log.info(f"   Cities to search: {len(cities)}")
-        if city_offset > 0:
-            cities = cities[city_offset:]
-            Actor.log.info(f"   After offset {city_offset}: {len(cities)} cities")
 
         # ── Phase 1: Discover groomers via DuckDuckGo ──
         Actor.log.info("🔍 Phase 1: Discovering groomers...")
