@@ -7,7 +7,7 @@
   "minMemoryMbytes": 1024,
   "maxMemoryMbytes": 4096,
   "defaultRunOptions": {
-    "timeoutSecs": 10800,
+    "timeoutSecs": 21600,
     "memoryMbytes": 4096
   },
   "input": {
