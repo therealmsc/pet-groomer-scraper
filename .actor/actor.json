@@ -6,6 +6,10 @@
   "version": "1.0",
   "minMemoryMbytes": 1024,
   "maxMemoryMbytes": 4096,
+  "defaultRunOptions": {
+    "timeoutSecs": 10800,
+    "memoryMbytes": 4096
+  },
   "input": {
     "title": "Scraper Input",
     "type": "object",
@@ -42,7 +46,7 @@
         "title": "Max Groomers Per City",
         "type": "integer",
         "description": "Maximum groomer websites to crawl per city",
-        "default": 15,
+        "default": 5,
         "minimum": 1,
         "maximum": 50
       }
