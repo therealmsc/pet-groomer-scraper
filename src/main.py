@@ -425,6 +425,9 @@ async def main() -> None:
             cities = cities[:max_cities]
 
         Actor.log.info(f"   Cities to search: {len(cities)}")
+        if city_offset > 0:
+            cities = cities[city_offset:]
+            Actor.log.info(f"   After offset {city_offset}: {len(cities)} cities")
 
         # ── Phase 1: Discover groomers via DuckDuckGo ──
         Actor.log.info("🔍 Phase 1: Discovering groomers...")
