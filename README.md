@@ -59,6 +59,25 @@ No API keys. No login. Just pick a state and run.
 }
 ```
 
+## Input parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| state | select | Missouri | US state to scrape |
+| maxCities | integer | 0 (all) | Limit cities for testing |
+| cityOffset | integer | 0 | Skip N cities before starting — paginate large states across multiple runs |
+| maxGroomersPerCity | integer | 5 | Max websites crawled per city |
+
+## Runtime estimates
+
+| State size | Cities | Est. time |
+|---|---|---|
+| Small (WY, VT) | ~20-40 | 5-10 min |
+| Medium (MO, KS) | ~70-150 | 20-40 min |
+| Large (TX, CA) | ~450-600 | 1.5-2 hrs |
+
+Default timeout is 6 hours — enough for any state. For full USA coverage (~10,000 cities), run 50 states as separate tasks.
+
 ## Use cases
 
 - **Lead generation** — Build prospect lists for pet product suppliers, mobile groomer apps, pet insurance companies
@@ -75,15 +94,7 @@ No API keys. No login. Just pick a state and run.
 | Small state (~40 cities) | ~$1.00 |
 | Medium state (~200 cities) | ~$5.00 |
 | Large state (~600 cities) | ~$15.00 |
-| Full USA (~10,000 cities) | ~$40.00 |
-
-## Input parameters
-
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| state | select | Missouri | US state to scrape |
-| maxCities | integer | 0 (all) | Limit cities for testing |
-| maxGroomersPerCity | integer | 15 | Max websites crawled per city |
+| Full USA (~10,000 cities) | ~$250.00 |
 
 ## Why no competition?
 
@@ -92,6 +103,6 @@ There are zero dedicated US pet groomer scrapers on the Apify Store. The vet scr
 ## Limitations
 
 - Address extraction is best-effort — many groomer sites use images or embedded maps
-- DuckDuckGo rate limits require ~1 second between cities (~30 min for a full state)
+- DuckDuckGo rate limits require ~1 second between cities
 - Small towns (<2,000 pop) may genuinely have zero pet groomers
 - Mobile-only groomers without websites won't appear in results
