@@ -39,7 +39,7 @@
         "title": "Max Cities",
         "type": "integer",
         "description": "Limit cities to scrape (0 = all cities). Useful for testing.",
-        "default": 0,
+        "default": 3,
         "minimum": 0
       },
       "cityOffset": {
