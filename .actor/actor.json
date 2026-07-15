@@ -38,8 +38,8 @@
       "maxCities": {
         "title": "Max Cities",
         "type": "integer",
-        "description": "Limit cities to scrape (0 = all cities). Useful for testing.",
-        "default": 3,
+        "description": "Limit cities to scrape (0 = all cities). Apify auto-test uses 2 cities.",
+        "default": 2,
         "minimum": 0
       },
       "cityOffset": {
